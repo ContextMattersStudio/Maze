@@ -11,37 +11,37 @@ namespace CardboardGestures.Conditions
         {
             Condition_NearCube myScript = (Condition_NearCube)target;
 
-            myScript.objeto1 = (GameObject)EditorGUILayout.ObjectField("Objecto 1 (Movil)", myScript.objeto1, typeof(GameObject));
+			myScript.object1 = (GameObject)EditorGUILayout.ObjectField("Object 1 (Mobile)", myScript.object1, typeof(GameObject));
 
-            myScript.showZonaCubica = EditorGUILayout.Toggle("Mostrar zonaCubica", myScript.showZonaCubica);
-            myScript.posicion = EditorGUILayout.Vector3Field("Posición del zonaCubica", myScript.posicion);
-            myScript.lado = EditorGUILayout.FloatField("Longitud de cada cara", myScript.lado);
+			myScript.showCubicZone = EditorGUILayout.Toggle("Show cubic zone", myScript.showCubicZone);
+			myScript.positionCube = EditorGUILayout.Vector3Field("Position of cubic zone", myScript.positionCube);
+			myScript.cubeSide = EditorGUILayout.FloatField("Cube side longitude", myScript.cubeSide);
 
-            if (myScript.showZonaCubica)
+			if (myScript.showCubicZone)
             {
-                if (myScript.zonaCubica == null)
+				if (myScript.cubicZone == null)
                 {
-                    myScript.zonaCubica = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					myScript.cubicZone = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     //myScript.zonaCubica.GetComponent<MeshRenderer>().materials = new Material[0];
-                    myScript.zonaCubica.name = "Range cube";
-                    myScript.zonaCubica.transform.position = myScript.posicion;
+					myScript.cubicZone.name = "Range cube";
+					myScript.cubicZone.transform.position = myScript.positionCube;
                     Color c = Color.yellow;
 					c.a = 0.3f;
-                    myScript.zonaCubica.GetComponent<Renderer>().material.color = c;
-                    myScript.zonaCubica.transform.localScale = new Vector3(myScript.lado, myScript.lado, myScript.lado);
+					myScript.cubicZone.GetComponent<Renderer>().material.color = c;
+					myScript.cubicZone.transform.localScale = new Vector3(myScript.cubeSide, myScript.cubeSide, myScript.cubeSide);
                 }
 
-                if (myScript.lado != myScript.oldLado)
+				if (myScript.cubeSide != myScript.oldCubeSideValue)
                 {
-                    myScript.oldLado = myScript.lado;
-                    myScript.zonaCubica.transform.position = myScript.posicion;
-                    myScript.zonaCubica.transform.localScale = new Vector3(myScript.lado, myScript.lado, myScript.lado);
+					myScript.oldCubeSideValue = myScript.cubeSide;
+					myScript.cubicZone.transform.position = myScript.positionCube;
+					myScript.cubicZone.transform.localScale = new Vector3(myScript.cubeSide, myScript.cubeSide, myScript.cubeSide);
                 }
             }
             else
             {
-                GameObject.DestroyImmediate(myScript.zonaCubica);
-                myScript.zonaCubica = null;
+				GameObject.DestroyImmediate(myScript.cubicZone);
+				myScript.cubicZone = null;
             }
         }
     }

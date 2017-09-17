@@ -4,9 +4,9 @@
 	{
 	    public class Gesture_LookDown : AbstractGesture
 	    {
-			public float inclinacion = 45f;
+			public float inclination = 45f;
 
-	        private float sensibilidad = 0.7f;
+		    private float sensibility = 0.7f;
 
 	        public DeviceOrientation orientation;
 
@@ -20,7 +20,7 @@
 	        public override bool Analyze()
 	        {
 	            if ((orientation == DeviceOrientation.LandscapeLeft || orientation == DeviceOrientation.LandscapeRight)
-	               && initialVector.z - sensibilidad >= Input.acceleration.z)
+	               && initialVector.z - sensibility >= Input.acceleration.z)
 	            {
 	                return true;
 	            }
@@ -30,7 +30,7 @@
 	        public void Start()
 	        {
 	            initialVector = new Vector3(0.0f, -1.0f, 0.0f);
-				sensibilidad = convertDegreesToSensibility (inclinacion);
+				sensibility = convertDegreesToSensibility (inclination);
 	        }
 
 		private float convertDegreesToSensibility(float inclinationDegrees){

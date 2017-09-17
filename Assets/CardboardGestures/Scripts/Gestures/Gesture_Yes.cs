@@ -7,12 +7,12 @@ namespace CardboardGestures.Gestures
 {
     public class Gesture_Yes : AbstractGesture
     {
-        public float tiempoMaximoParaReconocerGesto = 5.0f;
-        bool arribaReconocido = false;
-        bool abajoReconocido = false;
-        bool reconociendo;
-        public float sensibilidad; //que tan sensible es el gesto de "Yes" mientras mas grande el número menos sensible. [0 - 5 mas o menos]
-        float tiempoMax = 5.0f;
+        public float maxTimeToRecognizeGesture = 5.0f;
+		bool upMovementRecognized = false;
+		bool downMovementRecognized = false;
+		bool recognizing;
+        public float gestureMovementSpeed;
+		float maxTime = 5.0f;
         
 
         public override string GestureName()
@@ -23,43 +23,43 @@ namespace CardboardGestures.Gestures
         public override bool Analyze()
         { // tiempoMax es el tiempo máximo en el que se espera reconocer el gesto a partir del primer movimiento hacia la izquierda de la cabeza.
 
-            if (Time.time >= tiempoMaximoParaReconocerGesto)
+            if (Time.time >= maxTimeToRecognizeGesture)
             {
-                reconociendo = false;
-                arribaReconocido = false;
-                abajoReconocido = false;
+                recognizing = false;
+                upMovementRecognized = false;
+                downMovementRecognized = false;
             }
 
-            if (Input.gyro.rotationRateUnbiased.x > sensibilidad && !arribaReconocido)
-                reconociendo = true;
+            if (Input.gyro.rotationRateUnbiased.x > gestureMovementSpeed && !upMovementRecognized)
+                recognizing = true;
 
-            if (!reconociendo)
-                tiempoMaximoParaReconocerGesto = Time.time + tiempoMax;
+            if (!recognizing)
+                maxTimeToRecognizeGesture = Time.time + maxTime;
             else
             {
-                if (!arribaReconocido && Time.time < tiempoMaximoParaReconocerGesto)
+                if (!upMovementRecognized && Time.time < maxTimeToRecognizeGesture)
                 {
-                    if (Input.gyro.rotationRateUnbiased.x > sensibilidad)// reconocí el primer movimiento de la cabeza hacia arriba dentro del tiempo permitido
+                    if (Input.gyro.rotationRateUnbiased.x > gestureMovementSpeed)// reconocí el primer movimiento de la cabeza hacia arriba dentro del tiempo permitido
                     {
-                        reconociendo = true;
-                        arribaReconocido = true;
+                        recognizing = true;
+                        upMovementRecognized = true;
                         if (debugInfo!= null) { 
                             debugInfo.GetComponent<TextMesh>().text = "arriba Reconocido";
                         }
                     }
                 }
                 else
-                    if (Input.gyro.rotationRateUnbiased.x < -sensibilidad && !abajoReconocido && Time.time < tiempoMaximoParaReconocerGesto) // reconocí el primer movimiento de la cabeza hacia abajo dentro del tiempo permitido
+                    if (Input.gyro.rotationRateUnbiased.x < -gestureMovementSpeed && !downMovementRecognized && Time.time < maxTimeToRecognizeGesture) // reconocí el primer movimiento de la cabeza hacia abajo dentro del tiempo permitido
                     {
-                        abajoReconocido = true;
+                        downMovementRecognized = true;
                         debugInfo.GetComponent<TextMesh>().text = "abajo Reconocido";
                     }
                     else
-                        if (Input.gyro.rotationRateUnbiased.x > sensibilidad && Time.time < tiempoMaximoParaReconocerGesto && abajoReconocido)// reconocí el segundo movimiento de la cabeza hacia arriba dentro del tiempo permitido
+                        if (Input.gyro.rotationRateUnbiased.x > gestureMovementSpeed && Time.time < maxTimeToRecognizeGesture && downMovementRecognized)// reconocí el segundo movimiento de la cabeza hacia arriba dentro del tiempo permitido
                         {
-                            arribaReconocido = false;
-                            abajoReconocido = false;
-                            reconociendo = false;
+                            upMovementRecognized = false;
+                            downMovementRecognized = false;
+                            recognizing = false;
                             if (debugInfo != null) { 
                                 debugInfo.GetComponent<TextMesh>().text = "Yes Reconocido";
                             }
@@ -75,10 +75,9 @@ namespace CardboardGestures.Gestures
         {
 
             Input.gyro.enabled = true;
-            reconociendo = true;
-			sensibilidad = 5 - sensibilidad;
-            arribaReconocido = false;
-            abajoReconocido = false;
+            recognizing = true;
+            upMovementRecognized = false;
+            downMovementRecognized = false;
 
         }
     }

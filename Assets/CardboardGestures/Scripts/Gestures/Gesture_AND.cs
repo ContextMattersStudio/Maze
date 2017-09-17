@@ -14,7 +14,7 @@ namespace CardboardGestures.Gestures
         float timeGesture1;
         float timeGesture;
         public float timeBetweenGestures;
-        [Header("Active si quiere ejecucion en orden")]
+        [Header("Activate if you want in order execution")]
         public bool inOrder;
 
         void Start()
