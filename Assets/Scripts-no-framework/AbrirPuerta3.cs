@@ -2,64 +2,63 @@
 using System.Collections;
 
 public class AbrirPuerta3 : MonoBehaviour {
-	public GameObject usuario;
-	public float rango = 2f;
-	bool seMovio = false;
-	bool reconociendo = false;
+	public GameObject user;
+	public float range = 2f;
+	bool doorMoved = false;
+	bool recognizing = false;
 	public DeviceOrientation orientation;
-	[Header("Tiempo máximo para reconocer el gesto")]
-	public float tiempoMax= 5f;
-	float tiempoMaximoParaReconocerGesto=5f;
+	[Header("Max time to recognize the gesture")]
+	public float maxTime= 5f;
+	float maxTimeToRecognizeGesture=5f;
 	bool insideZone;
 
 	private Vector3 initialVector;
 	bool reconociTiltLeft = false;
-	[Header("Configuración sensibilidades")]
-	public float inclinacionTiltLeft;
-	public float sensibilidadLookDown;
+	[Header("Gesture advanced settings")]
+	public float inclinationTiltLeft;
+	public float inclinationLookDown;
 
-
-	// Use this for initialization
 	void Start () {
 		Input.gyro.enabled = true;
-		reconociendo = true;
+		recognizing = true;
 		initialVector = new Vector3(0.0f, -1.0f, 0.0f);
 		insideZone = false;
+		inclinationLookDown = convertDegreesToSensibility (inclinationLookDown);
+		inclinationTiltLeft = convertDegreesToSensibility (inclinationTiltLeft);
 	}
 
 	void Update(){
-		if (!seMovio) {
-			float distanceX = usuario.transform.position.x - gameObject.transform.position.x;
-			float distanceY = usuario.transform.position.y - gameObject.transform.position.y;
-			float distanceZ = usuario.transform.position.z - gameObject.transform.position.z;
-			if (Mathf.Abs (distanceX) <= rango &&
-				Mathf.Abs (distanceY) <= rango && Mathf.Abs (distanceZ) <= rango) {
+		if (!doorMoved) {
+			float distanceX = user.transform.position.x - gameObject.transform.position.x;
+			float distanceY = user.transform.position.y - gameObject.transform.position.y;
+			float distanceZ = user.transform.position.z - gameObject.transform.position.z;
+			if (Mathf.Abs (distanceX) <= range &&
+				Mathf.Abs (distanceY) <= range && Mathf.Abs (distanceZ) <= range) {
 				if (!insideZone) {
-					usuario.GetComponent<TextMesh> ().text = "INSIDE ZONE2";
+					user.GetComponent<TextMesh> ().text = "INSIDE ZONE2";
 					insideZone = true;
 				}
-				if (Time.time >= tiempoMaximoParaReconocerGesto) {
-					reconociendo = false;
+				if (Time.time >= maxTimeToRecognizeGesture) {
+					recognizing = false;
 					reconociTiltLeft = false;
 				}
 
 				if ((orientation == DeviceOrientation.LandscapeLeft
-					&& initialVector.x - inclinacionTiltLeft > Input.acceleration.x)
-					||
-					(orientation == DeviceOrientation.LandscapeRight
-						&& initialVector.x + inclinacionTiltLeft > Input.acceleration.x)) {
-					reconociendo = true;
+					&& initialVector.x - inclinationTiltLeft > Input.acceleration.x)
+					|| (orientation == DeviceOrientation.LandscapeRight
+						&& initialVector.x + inclinationTiltLeft > Input.acceleration.x)) {
+					recognizing = true;
 					reconociTiltLeft = true;
 				}
 
-				if (!reconociendo)
-					tiempoMaximoParaReconocerGesto = Time.time + tiempoMax;
+				if (!recognizing)
+					maxTimeToRecognizeGesture = Time.time + maxTime;
 				else {
 					if (reconociTiltLeft) {
 						if ((orientation == DeviceOrientation.LandscapeLeft ||
 							orientation == DeviceOrientation.LandscapeRight)
-						   && initialVector.z - sensibilidadLookDown >= Input.acceleration.z) {
-							seMovio = true;
+							&& initialVector.z - inclinationLookDown >= Input.acceleration.z) {
+							doorMoved = true;
 							gameObject.transform.position = new Vector3 (gameObject.transform.position.x,
 								gameObject.transform.position.y - 100, gameObject.transform.position.z);
 						}
@@ -67,5 +66,8 @@ public class AbrirPuerta3 : MonoBehaviour {
 				}
 			}
 		}
+	}
+	private float convertDegreesToSensibility(float inclinationDegrees){
+		return inclinationDegrees / 90f;
 	}
 }

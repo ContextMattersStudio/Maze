@@ -6,12 +6,12 @@ public class AbrirPuerta1 : MonoBehaviour {
 	public GameObject user;
 
 	public float range = 2f;
-	public float inclinacion = 45f;
+	public float inclination = 45f;
 	bool doorMoved = false;
 
 	// Use this for initialization
 	void Start () {
-		inclinacion = convertDegreesToSensibility (inclinacion);
+		inclination = convertDegreesToSensibility (inclination);
 	}
 	
 	// Update is called once per frame
@@ -23,7 +23,7 @@ public class AbrirPuerta1 : MonoBehaviour {
 			if (Mathf.Abs (distanceX) <= range 
 				&& Mathf.Abs (distanceY) <= range 
 				&& Mathf.Abs (distanceZ) <= range) {
-				if (- inclinacion >= Input.acceleration.z) {
+				if (- inclination >= Input.acceleration.z) {
 					gameObject.transform.position = new Vector3 (gameObject.transform.position.x,
 				         	gameObject.transform.position.y - 100, gameObject.transform.position.z);
 					doorMoved = true;
